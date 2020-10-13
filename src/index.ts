@@ -51,13 +51,9 @@ class SampleCode extends Component {
   constructor(project: AwsCdkAppSyncApp) {
     super(project);
     this.appProject = project;
-
-    console.log('Constructor complete');
   }
 
   public synthesize(outdir: string) {
-    console.log('Synthesizing...');
-
     const srcdir = path.join(outdir, this.appProject.srcdir);
     if (fs.pathExistsSync(srcdir) && fs.readdirSync(srcdir).filter(x => x.endsWith('.ts'))) {
       return;
@@ -259,7 +255,5 @@ type Mutation {
 }`;
 
     fs.writeFileSync(path.join(outdir, 'schema.graphql'), sampleSchema);
-
-    console.log('DONE');
   }
 }
