@@ -3,7 +3,7 @@ import { NodePackageManager } from 'projen';
 
 import { AwsCdkAppSyncApp } from '../src';
 
-describe('package.json', () => {
+describe('project synth', () => {
     const project = new AwsCdkAppSyncApp({
         cdkVersion: '1.63.0',
         transformerVersion: 'v1.63.0-rc.2',
@@ -15,11 +15,6 @@ describe('package.json', () => {
     const outdir = fs.mkdtempSync('/tmp/projen-test-');
     project.synth(outdir);
 
-    it('renders name', () => {
-        const actual = JSON.parse(fs.readFileSync(`${outdir}/package.json`, 'utf-8'));
-        expect(actual.name).toEqual('test-appsync-project');
-    });
-
     it('gets deps right', () => {
         const actual = JSON.parse(fs.readFileSync(`${outdir}/package.json`, 'utf-8'));
         expect(actual.dependencies).toEqual({
@@ -30,5 +25,15 @@ describe('package.json', () => {
             '@aws-cdk/aws-dynamodb': '1.63.0',
             'aws-cdk-appsync-transformer': 'v1.63.0-rc.2',
         });
+    });
+
+    it('creates schema.graphql', () => {
+        const schemaExists = fs.existsSync(`${outdir}/schema.graphql`);
+        expect(schemaExists).toBe(true);
+    });
+
+    it('creates index.ts', () => {
+        const indexExists = fs.existsSync(`${outdir}/src/main.ts`);
+        expect(indexExists).toBe(true);
     });
 });

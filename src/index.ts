@@ -67,6 +67,7 @@ import { AppSyncTransformer } from 'aws-cdk-appsync-transformer';
 
 export class MyStack extends Stack {
   public userPool: UserPool;
+  public api: AppSyncTransformer
 
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
@@ -102,7 +103,7 @@ export class MyStack extends Stack {
       }
     })
 
-    new AppSyncTransformer(this, 'appsync-api', {
+    this.api = new AppSyncTransformer(this, 'appsync-api', {
       schemaPath: './schema.graphql',
       apiName: 'my-cool-api',
       authorizationConfig: {
@@ -189,25 +190,6 @@ type Order @model
         productID: ID!
         total: String!
         ordered: AWSDateTime!
-}
-
-type Blog @model {
-  id: ID!
-  name: String!
-  posts: [Post] @connection(name: "BlogPosts")
-}
-
-type Post @model {
-  id: ID!
-  title: String!
-  blog: Blog @connection(name: "BlogPosts")
-  comments: [Comment] @connection(name: "PostComments")
-}
-
-type Comment @model {
-  id: ID!
-  content: String
-  post: Post @connection(name: "PostComments")
 }
 
 # Demonstrate the FUNCTION resolvers

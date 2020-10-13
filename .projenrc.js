@@ -10,8 +10,7 @@ const project = new JsiiProject({
         'build': 'tsc'
     },
     entrypoint: 'lib/index.js',
-    devDeps: ['fs-extra'],
-    devDependencies: { '@types/fs-extra': '^8' },
+    devDeps: ['fs-extra', '@types/fs-extra'],
     deps: [ 'fs-extra', 'projen' ],
     peerDeps: ['projen'],
     bundledDeps: [ 'fs-extra' ],
