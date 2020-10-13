@@ -24,3 +24,9 @@ const project = new AwsCdkAppSyncApp({
 
 project.synth();
 ```
+
+### Projen
+
+```bash
+npx projen
+```
