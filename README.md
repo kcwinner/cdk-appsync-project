@@ -25,7 +25,7 @@ const project = new AwsCdkAppSyncApp({
 project.synth();
 ```
 
-### Projen
+### Run Projen
 
 ```bash
 npx projen
