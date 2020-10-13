@@ -64,13 +64,14 @@ class SampleCode extends Component {
     }
 
     const srcCode = `import { App, Construct, Stack, StackProps } from '@aws-cdk/core';
-import { UserPool, UserPoolClient, VerificationEmailStyle, CfnUserPoolGroup } from '@aws-cdk/aws-cognito';
-import { AuthorizationType, UserPoolDefaultAction, LambdaDataSource, GraphqlApi } from '@aws-cdk/aws-appsync';
-import { Effect, PolicyDocument, PolicyStatement, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
+import { UserPool, UserPoolClient, VerificationEmailStyle } from '@aws-cdk/aws-cognito';
+import { AuthorizationType, UserPoolDefaultAction } from '@aws-cdk/aws-appsync';
 
 import { AppSyncTransformer } from 'aws-cdk-appsync-transformer';
 
 export class MyStack extends Stack {
+  public userPool: UserPool;
+
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
 
