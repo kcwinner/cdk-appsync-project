@@ -11,10 +11,8 @@ const project = new JsiiProject({
     },
     entrypoint: 'lib/index.js',
     devDeps: ['fs-extra', '@types/fs-extra'],
-    deps: [ 'fs-extra', 'projen' ],
+    deps: [ 'projen' ],
     peerDeps: ['projen'],
-    bundledDeps: [ 'fs-extra' ],
-    packageManager: NodePackageManager.NPM,
     eslint: false,
     mergify: false,
     projenDevDependency: true

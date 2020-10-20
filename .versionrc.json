@@ -13,6 +13,6 @@
   ],
   "commitAll": true,
   "scripts": {
-    "postbump": "npm run projen && git add ."
+    "postbump": "yarn run projen && git add ."
   }
 }
