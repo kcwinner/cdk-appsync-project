@@ -2,7 +2,7 @@ const { JsiiProject, NodePackageManager } = require('projen');
 
 const project = new JsiiProject({
     name: 'cdk-appsync-project',
-    repository: 'https://github.com/eladn/cdk-appsync-project.git',
+    repository: 'https://github.com/kcwinner/cdk-appsync-project.git',
     stability: 'experimental',
     authorName: 'Ken Winner',
     authorAddress: 'kcswinner@gmail.com',
