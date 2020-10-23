@@ -6,9 +6,6 @@ const project = new JsiiProject({
     stability: 'experimental',
     authorName: 'Ken Winner',
     authorAddress: 'kcswinner@gmail.com',
-    scripts: {
-        'build': 'tsc'
-    },
     entrypoint: 'lib/index.js',
     devDeps: ['fs-extra', '@types/fs-extra'],
     deps: [ 'projen' ],

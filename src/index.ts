@@ -117,7 +117,6 @@ export class MyStack extends Stack {
         }
       }
     })
-
   }
 }
 
