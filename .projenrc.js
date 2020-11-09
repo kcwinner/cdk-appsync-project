@@ -14,6 +14,8 @@ const project = new JsiiProject({
     eslint: false,
     mergify: false,
     projenDevDependency: true,
+    defaultReleaseBranch: 'main',
+    releaseBranches: ['main']
     // codeCov: true
 });
 
