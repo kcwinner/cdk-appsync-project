@@ -14,7 +14,8 @@ const project = new JsiiProject({
     eslint: false,
     mergify: false,
     projenDevDependency: true,
-    codeCov: true
+    jest: false,
+    codeCov: false
 });
 
 project.synth();
