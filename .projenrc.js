@@ -1,4 +1,4 @@
-const { JsiiProject, NodePackageManager } = require('projen');
+const { JsiiProject } = require('projen');
 
 const project = new JsiiProject({
     name: 'cdk-appsync-project',
@@ -7,12 +7,14 @@ const project = new JsiiProject({
     authorName: 'Ken Winner',
     authorAddress: 'kcswinner@gmail.com',
     entrypoint: 'lib/index.js',
-    devDeps: ['fs-extra', '@types/fs-extra'],
-    deps: [ 'projen' ],
-    peerDeps: ['projen'],
+    devDeps: ['@types/fs-extra@^8'], // This will break if it's on 9
+    deps: ['projen'],
+    peerDeps: [ 'projen' ],
+    bundledDeps: ['fs-extra'],
     eslint: false,
     mergify: false,
-    projenDevDependency: true
+    projenDevDependency: true,
+    codeCov: true
 });
 
 project.synth();
