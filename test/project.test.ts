@@ -1,5 +1,4 @@
 import * as fs from 'fs-extra';
-import { NodePackageManager } from 'projen';
 
 import { AwsCdkAppSyncApp } from '../src';
 
@@ -8,8 +7,7 @@ describe('project synth', () => {
         cdkVersion: '1.63.0',
         transformerVersion: 'v1.63.0-rc.2',
         cdkVersionPinning: true,
-        name: 'test-appsync-project',
-        packageManager: NodePackageManager.NPM,
+        name: 'test-appsync-project'
     });
 
     const outdir = fs.mkdtempSync('/tmp/projen-test-');
