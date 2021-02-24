@@ -6,7 +6,7 @@ export interface AwsCdkAppSyncAppOptions extends AwsCdkTypeScriptAppOptions {
   /**
    * cdk-appsync-transformer version to use.
    *
-   * @default "1.63.0-rc.3"
+   * @default "1.77.9"
    */
   readonly transformerVersion: string;
 }
@@ -26,8 +26,8 @@ export class AwsCdkAppSyncApp extends AwsCdkTypeScriptApp {
     const transformerVersion = options.cdkVersionPinning
       ? Semver.pinned(options.transformerVersion)
       : Semver.caret(options.transformerVersion);
-
-    this.addDependencies({ 'aws-cdk-appsync-transformer': transformerVersion });
+    
+    this.addDeps(`cdk-appsync-transformer@${transformerVersion}`)
 
     this.addCdkDependency(...[
       '@aws-cdk/core',
@@ -53,8 +53,8 @@ class SampleCode extends Component {
     this.appProject = project;
   }
 
-  public synthesize(outdir: string) {
-    const srcdir = path.join(outdir, this.appProject.srcdir);
+  public synthesize() {    
+    const srcdir = path.join(this.project.outdir, this.appProject.srcdir);
     if (fs.pathExistsSync(srcdir) && fs.readdirSync(srcdir).filter(x => x.endsWith('.ts'))) {
       return;
     }
@@ -136,7 +136,7 @@ app.synth();`;
     fs.mkdirpSync(srcdir);
     fs.writeFileSync(path.join(srcdir, this.appProject.appEntrypoint), srcCode);
 
-    const testdir = path.join(outdir, this.appProject.testdir);
+    const testdir = path.join(this.project.outdir, this.appProject.testdir);
     if (fs.pathExistsSync(testdir) && fs.readdirSync(testdir).filter(x => x.endsWith('.ts'))) {
       return;
     }
@@ -235,6 +235,6 @@ type Mutation {
   updateUser(input: UpdateUserInput!): User @function(name: "currently-unused")
 }`;
 
-    fs.writeFileSync(path.join(outdir, 'schema.graphql'), sampleSchema);
+    fs.writeFileSync(path.join(this.project.outdir, 'schema.graphql'), sampleSchema);
   }
 }
