@@ -12,8 +12,8 @@ test('Empty', () => {
   expect(project.srcdir).toEqual('src');
   expect(project.libdir).toEqual('lib');
 
-  const dependencies = project.deps;
-  console.log(dependencies);
+  // TODO: Fix this as it does not work
+  // const cdkAppsyncTransformer = project.deps.getDependency('cdk-appsync-transformer');
   
   // expect(dependencies['cdk-appsync-transformer']).toEqual('^1.77.9');
 });
