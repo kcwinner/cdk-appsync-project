@@ -12,3 +12,10 @@ Since the AppSync transformer uses version `1.63.0` of the AWS CDK we want to pi
 ```bash
 npx projen new --from cdk-appsync-project --cdk-version-pinning true --cdk-version "1.63.0"
 ```
+
+## Notice
+
+This project has the `.jsii` file and the `lib/` folder committed. This facilitates the following testing
+```bash
+npx projen new --from https://github.com/kcwinner/cdk-appsync-project --cdk-version-pinning true --cdk-version "1.63.0"
+```
