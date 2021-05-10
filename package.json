@@ -5,22 +5,23 @@
     "url": "https://github.com/kcwinner/cdk-appsync-project.git"
   },
   "scripts": {
-    "projen": "npx projen",
-    "start": "npx projen start",
     "clobber": "npx projen clobber",
+    "bump": "npx projen bump",
+    "unbump": "npx projen unbump",
     "compile": "npx projen compile",
     "test:compile": "npx projen test:compile",
     "test": "npx projen test",
     "build": "npx projen build",
-    "bump": "npx projen bump",
-    "release": "npx projen release",
     "test:watch": "npx projen test:watch",
     "test:update": "npx projen test:update",
     "projen:upgrade": "npx projen projen:upgrade",
+    "default": "npx projen default",
     "watch": "npx projen watch",
     "package": "npx projen package",
     "compat": "npx projen compat",
-    "docgen": "npx projen docgen"
+    "docgen": "npx projen docgen",
+    "projen": "npx projen",
+    "start": "npx projen start"
   },
   "author": {
     "name": "Ken Winner",
@@ -37,24 +38,21 @@
     "jsii-diff": "^1.11.0",
     "jsii-docgen": "^1.3.2",
     "jsii-pacmak": "^1.11.0",
-    "projen": "^0.16.15",
+    "projen": "^0.17.83",
     "standard-version": "^9",
     "ts-jest": "^26.4.4",
     "typescript": "^3.9.5"
   },
   "peerDependencies": {
-    "projen": "^0.16.15"
+    "projen": "^0.17.83"
   },
   "dependencies": {
-    "fs-extra": "^9.0.1",
-    "projen": "^0.16.15"
+    "projen": "^0.17.83"
   },
-  "bundledDependencies": [
-    "fs-extra"
-  ],
+  "bundledDependencies": [],
   "main": "lib/index.js",
   "license": "Apache-2.0",
-  "version": "1.0.4",
+  "version": "0.0.0",
   "jest": {
     "testMatch": [
       "**/__tests__/**/*.ts?(x)",

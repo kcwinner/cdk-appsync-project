@@ -1,12 +1,13 @@
-import * as fs from 'fs-extra'; // eslint-disable-line
-import * as path from 'path'; // eslint-disable-line
-import { AwsCdkTypeScriptApp, AwsCdkTypeScriptAppOptions, Component, Semver } from 'projen'; // eslint-disable-line
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import { AwsCdkTypeScriptApp, AwsCdkTypeScriptAppOptions, Component, SampleDir } from 'projen';
+import { pascalCase } from './pascalCase';
 
 export interface AwsCdkAppSyncAppOptions extends AwsCdkTypeScriptAppOptions {
   /**
    * cdk-appsync-transformer version to use.
    *
-   * @default "1.77.9"
+   * @default "1.77.15"
    */
   readonly transformerVersion: string;
 }
@@ -24,9 +25,9 @@ export class AwsCdkAppSyncApp extends AwsCdkTypeScriptApp {
     });
 
     const transformerVersion = options.cdkVersionPinning
-      ? Semver.pinned(options.transformerVersion)
-      : Semver.caret(options.transformerVersion);
-    
+      ? `^${options.transformerVersion}`
+      : options.transformerVersion
+
     this.addDeps(`cdk-appsync-transformer@${transformerVersion}`)
 
     this.addCdkDependency(...[
@@ -34,6 +35,7 @@ export class AwsCdkAppSyncApp extends AwsCdkTypeScriptApp {
       '@aws-cdk/aws-appsync',
       '@aws-cdk/aws-cognito',
       '@aws-cdk/aws-dynamodb',
+      '@aws-cdk/aws-iam',
     ]);
 
     this.gitignore.exclude('appsync/');
@@ -47,32 +49,100 @@ export class AwsCdkAppSyncApp extends AwsCdkTypeScriptApp {
 
 class SampleCode extends Component {
   private readonly appProject: AwsCdkAppSyncApp;
+  private readonly projectName: string;
 
   constructor(project: AwsCdkAppSyncApp) {
     super(project);
     this.appProject = project;
+    this.projectName = path.basename(process.cwd());
   }
 
-  public synthesize() {    
+  public synthesize() {
     const srcdir = path.join(this.project.outdir, this.appProject.srcdir);
     if (fs.pathExistsSync(srcdir) && fs.readdirSync(srcdir).filter(x => x.endsWith('.ts'))) {
       return;
     }
 
-    const srcCode = `import { App, Construct, Stack, StackProps } from '@aws-cdk/core';
-import { UserPool, UserPoolClient, VerificationEmailStyle } from '@aws-cdk/aws-cognito';
+    const projectType = pascalCase(this.projectName);
+
+    new SampleDir(this.project, this.appProject.srcdir, {
+      files: {
+        'main.ts': this.createMainTsContents(this.projectName, projectType),
+      },
+    });
+
+    const libDir = path.join(this.appProject.srcdir, 'lib');
+    new SampleDir(this.appProject, libDir, {
+      files: {
+        [`${this.projectName}-stack.ts`]: this.createProjectStackContents(projectType),
+      },
+    });
+
+    const testCode = `import '@aws-cdk/assert/jest';
+import { MyStack } from '../src/main'
+import { App } from '@aws-cdk/core';
+
+test('Snapshot', () => {
+  const app = new App();
+  const stack = new MyStack(app, 'test');
+
+  expect(stack).toHaveResource('AWS::Cognito::UserPool');
+  expect(stack.api.nestedAppsyncStack).toHaveResource('AWS::AppSync::GraphQLApi');
+});`;
+
+    new SampleDir(this.project, this.appProject.testdir, {
+      files: {
+        'main.test.ts': testCode
+      }
+    })
+
+    const sampleSchema = this.createSampleSchema();
+    fs.writeFileSync(path.join(this.project.outdir, 'schema.graphql'), sampleSchema);
+  }
+
+  private createMainTsContents(projectName: string, projectType: string): string {
+    return `import { App } from '@aws-cdk/core';
+import { ${projectType}Stack } from './lib/${projectName}-stack';
+const STAGE = process.env.STAGE || 'dev'; // default to dev as the stage
+const ACCOUNT = process.env.ACCOUNT || process.env.CDK_DEFAULT_ACCOUNT;
+const REGION = process.env.REGION || 'us-east-2'; // default region we are using
+const app = new App(
+  {
+    context: {
+      STAGE: STAGE,
+    },
+  },
+);
+
+new ${projectType}Stack(app, \`${projectName}-\${STAGE}\`, {
+  terminationProtection: true,
+  description: 'Stack for ${projectName}',
+  env: {
+    account: ACCOUNT,
+    region: REGION,
+  },
+});
+app.synth();`;
+  }
+
+  private createProjectStackContents(projectType: string): string {
+    return `import { Construct, Stack, StackProps } from '@aws-cdk/core';
 import { AuthorizationType, UserPoolDefaultAction } from '@aws-cdk/aws-appsync';
+import { CfnIdentityPool, UserPool, UserPoolClient, VerificationEmailStyle } from '@aws-cdk/aws-cognito';
+import { Role, WebIdentityPrincipal } from '@aws-cdk/aws-iam';
 
-import { AppSyncTransformer } from 'aws-cdk-appsync-transformer';
+import { AppSyncTransformer } from 'cdk-appsync-transformer';
 
-export class MyStack extends Stack {
+export interface ${projectType}StackProps extends StackProps { }
+
+export class ${projectType}Stack extends Stack {
   public userPool: UserPool;
-  public api: AppSyncTransformer
+  public appsyncTransformer: AppSyncTransformer
 
-  constructor(scope: Construct, id: string, props: StackProps = {}) {
+  constructor(scope: Construct, id: string, props: ${projectType}StackProps = {}) {
     super(scope, id, props);
 
-    this.userPool = new UserPool(this, 'cognito', {
+    this.userPool = new UserPool(this, 'user-pool', {
       autoVerify: {
         email: true,
         phone: false
@@ -94,16 +164,41 @@ export class MyStack extends Stack {
       }
     });
 
-    const userpoolWebClient = new UserPoolClient(this, 'cognito-user-pool-client', {
+    const userpoolWebClient = new UserPoolClient(this, 'user-pool-client', {
       userPool: this.userPool,
       generateSecret: false,
       authFlows: {
         userPassword: true,
-        refreshToken: true
       }
-    })
+    });
 
-    this.api = new AppSyncTransformer(this, 'appsync-api', {
+    const identityPool = new CfnIdentityPool(this, 'identity-pool', {
+      cognitoIdentityProviders: [
+        {
+          clientId: userpoolWebClient.userPoolClientId,
+          providerName: \`cognito-idp.\${this.region}.amazonaws.com/\${this.userPool.userPoolId}\`,
+        },
+      ],
+      allowUnauthenticatedIdentities: true,
+    });
+
+    const unauthRole = new Role(this, 'unauth-role', {
+      assumedBy: new WebIdentityPrincipal('cognito-identity.amazonaws.com')
+        .withConditions({
+          'StringEquals': { 'cognito-identity.amazonaws.com:aud': \`\${identityPool.ref}\` },
+          'ForAnyValue:StringLike': { 'cognito-identity.amazonaws.com:amr': 'unauthenticated' },
+        }),
+    });
+
+    const authRole = new Role(this, 'auth-role', {
+      assumedBy: new WebIdentityPrincipal('cognito-identity.amazonaws.com')
+        .withConditions({
+          'StringEquals': { 'cognito-identity.amazonaws.com:aud': \`\${identityPool.ref}\` },
+          'ForAnyValue:StringLike': { 'cognito-identity.amazonaws.com:amr': 'authenticated' },
+        }),
+    });
+
+    this.appsyncTransformer = new AppSyncTransformer(this, 'appsync-api', {
       schemaPath: './schema.graphql',
       apiName: 'my-cool-api',
       authorizationConfig: {
@@ -116,47 +211,15 @@ export class MyStack extends Stack {
           }
         }
       }
-    })
+    });
+
+    this.appsyncTransformer.grantPublic(unauthRole);
   }
-}
+}`
+  }
 
-// for development, use account/region from cdk cli
-const devEnv = {
-  account: process.env.CDK_DEFAULT_ACCOUNT,
-  region: process.env.CDK_DEFAULT_REGION,
-};
-
-const app = new App();
-
-new MyStack(app, 'my-stack-dev', { env: devEnv });
-// new MyStack(app, 'my-stack-prod', { env: prodEnv });
-
-app.synth();`;
-
-    fs.mkdirpSync(srcdir);
-    fs.writeFileSync(path.join(srcdir, this.appProject.appEntrypoint), srcCode);
-
-    const testdir = path.join(this.project.outdir, this.appProject.testdir);
-    if (fs.pathExistsSync(testdir) && fs.readdirSync(testdir).filter(x => x.endsWith('.ts'))) {
-      return;
-    }
-
-    const testCode = `import '@aws-cdk/assert/jest';
-import { MyStack } from '../src/main'
-import { App } from '@aws-cdk/core';
-
-test('Snapshot', () => {
-  const app = new App();
-  const stack = new MyStack(app, 'test');
-
-  expect(stack).toHaveResource('AWS::Cognito::UserPool');
-  expect(stack.api.nestedAppsyncStack).toHaveResource('AWS::AppSync::GraphQLApi');
-});`;
-
-    fs.mkdirpSync(testdir);
-    fs.writeFileSync(path.join(testdir, 'main.test.ts'), testCode);
-
-    const sampleSchema = `# This is a sample generated schema
+  private createSampleSchema(): string {
+    return `# This is a sample generated schema
 type Customer @model
     @auth(rules: [
         { allow: groups, groups: ["Admins"] },
@@ -226,15 +289,13 @@ input UpdateUserInput {
 
 # Demonstrate the FUNCTION resolvers
 type Query {
-  listUsers: UserConnection @function(name: "currently-unused")
-  getUser(id: ID!): User @function(name: "currently-unused")
+  listUsers: UserConnection @function(name: "router")
+  getUser(id: ID!): User @function(name: "router")
 }
 
 type Mutation {
-  createUser(input: CreateUserInput!): User @function(name: "currently-unused")
-  updateUser(input: UpdateUserInput!): User @function(name: "currently-unused")
+  createUser(input: CreateUserInput!): User @function(name: "router")
+  updateUser(input: UpdateUserInput!): User @function(name: "router")
 }`;
-
-    fs.writeFileSync(path.join(this.project.outdir, 'schema.graphql'), sampleSchema);
   }
 }

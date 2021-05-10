@@ -6,11 +6,8 @@
       "author"
     ]
   },
-  "bundled": {
-    "fs-extra": "^9.0.1"
-  },
   "dependencies": {
-    "projen": "^0.16.15"
+    "projen": "^0.17.83"
   },
   "dependencyClosure": {
     "projen": {
@@ -18,43 +15,55 @@
         "projen.deps": {
           "locationInModule": {
             "filename": "src/index.ts",
-            "line": 39
+            "line": 43
           }
         },
         "projen.github": {
           "locationInModule": {
             "filename": "src/index.ts",
-            "line": 37
+            "line": 41
           }
         },
         "projen.java": {
           "locationInModule": {
             "filename": "src/index.ts",
-            "line": 40
+            "line": 44
+          }
+        },
+        "projen.javascript": {
+          "locationInModule": {
+            "filename": "src/index.ts",
+            "line": 47
           }
         },
         "projen.python": {
           "locationInModule": {
             "filename": "src/index.ts",
-            "line": 41
+            "line": 45
           }
         },
         "projen.tasks": {
           "locationInModule": {
             "filename": "src/index.ts",
-            "line": 35
+            "line": 39
+          }
+        },
+        "projen.typescript": {
+          "locationInModule": {
+            "filename": "src/index.ts",
+            "line": 46
           }
         },
         "projen.vscode": {
           "locationInModule": {
             "filename": "src/index.ts",
-            "line": 38
+            "line": 42
           }
         },
         "projen.web": {
           "locationInModule": {
             "filename": "src/index.ts",
-            "line": 36
+            "line": 40
           }
         }
       },
@@ -103,43 +112,55 @@
     "projen.deps": {
       "locationInModule": {
         "filename": "node_modules/projen/lib/index.d.ts",
-        "line": 37
+        "line": 41
       }
     },
     "projen.github": {
       "locationInModule": {
         "filename": "node_modules/projen/lib/index.d.ts",
-        "line": 35
+        "line": 39
       }
     },
     "projen.java": {
       "locationInModule": {
         "filename": "node_modules/projen/lib/index.d.ts",
-        "line": 38
+        "line": 42
+      }
+    },
+    "projen.javascript": {
+      "locationInModule": {
+        "filename": "node_modules/projen/lib/index.d.ts",
+        "line": 45
       }
     },
     "projen.python": {
       "locationInModule": {
         "filename": "node_modules/projen/lib/index.d.ts",
-        "line": 39
+        "line": 43
       }
     },
     "projen.tasks": {
       "locationInModule": {
         "filename": "node_modules/projen/lib/index.d.ts",
-        "line": 33
+        "line": 37
+      }
+    },
+    "projen.typescript": {
+      "locationInModule": {
+        "filename": "node_modules/projen/lib/index.d.ts",
+        "line": 44
       }
     },
     "projen.vscode": {
       "locationInModule": {
         "filename": "node_modules/projen/lib/index.d.ts",
-        "line": 36
+        "line": 40
       }
     },
     "projen.web": {
       "locationInModule": {
         "filename": "node_modules/projen/lib/index.d.ts",
-        "line": 34
+        "line": 38
       }
     }
   },
@@ -166,7 +187,7 @@
         },
         "locationInModule": {
           "filename": "src/index.ts",
-          "line": 20
+          "line": 21
         },
         "parameters": [
           {
@@ -180,7 +201,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/index.ts",
-        "line": 19
+        "line": 20
       },
       "name": "AwsCdkAppSyncApp"
     },
@@ -197,21 +218,21 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/index.ts",
-        "line": 5
+        "line": 6
       },
       "name": "AwsCdkAppSyncAppOptions",
       "properties": [
         {
           "abstract": true,
           "docs": {
-            "default": "\"1.77.9\"",
+            "default": "\"1.77.15\"",
             "stability": "experimental",
             "summary": "cdk-appsync-transformer version to use."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/index.ts",
-            "line": 11
+            "line": 12
           },
           "name": "transformerVersion",
           "type": {
@@ -221,6 +242,6 @@
       ]
     }
   },
-  "version": "1.0.4",
-  "fingerprint": "P8A0I+HabgqGnTkLrl3JD7vUhiGB4gtYEyg746yH8qM="
+  "version": "0.0.0",
+  "fingerprint": "5ScS0tNVMC8XKSmg/uK8KfLs603zP5RoErnpnh8eKq4="
 }
