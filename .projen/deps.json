@@ -45,7 +45,7 @@
     },
     {
       "name": "projen",
-      "version": "^0.16.15",
+      "version": "^0.17.83",
       "type": "build"
     },
     {
@@ -60,10 +60,6 @@
     {
       "name": "typescript",
       "type": "build"
-    },
-    {
-      "name": "fs-extra",
-      "type": "bundled"
     },
     {
       "name": "projen",

@@ -6,7 +6,7 @@ export interface AwsCdkAppSyncAppOptions extends AwsCdkTypeScriptAppOptions {
     /**
      * (experimental) cdk-appsync-transformer version to use.
      *
-     * @default "1.77.9"
+     * @default "1.77.15"
      * @experimental
      */
     readonly transformerVersion: string;

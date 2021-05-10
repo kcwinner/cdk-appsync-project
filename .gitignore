@@ -11,6 +11,8 @@
 .jsii
 .nyc_output
 .yarn-integrity
+/.changelog.tmp.md
+/.version.tmp.json
 /coverage
 /dist
 /lib
@@ -29,12 +31,11 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 tsconfig.json
 yarn-debug.log*
 yarn-error.log*
+!/.gitattributes
 !/.github/dependabot.yml
 !/.github/pull_request_template.md
 !/.github/workflows/build.yml
-!/.github/workflows/rebuild-bot.yml
 !/.github/workflows/release.yml
-!/.mergify.yml
 !/.npmignore
 !/.projen/deps.json
 !/.projen/tasks.json
@@ -46,4 +47,3 @@ yarn-error.log*
 !/src
 !/test
 !/tsconfig.jest.json
-!version.json
