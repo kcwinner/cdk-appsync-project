@@ -10,10 +10,11 @@ const project = new JsiiProject({
 
     entrypoint: 'lib/index.js',
     projenDevDependency: true,
+    bundledDeps: ['fs-extra'],
     devDeps: ['@types/fs-extra@^8'], // This will break if it's on 9
     deps: ['projen'],
-    peerDeps: [ 'projen' ],
-    
+    peerDeps: ['projen'],
+
     eslint: false,
     mergify: false,
 });
