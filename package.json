@@ -47,9 +47,12 @@
     "projen": "^0.17.83"
   },
   "dependencies": {
+    "fs-extra": "^9.1.0",
     "projen": "^0.17.83"
   },
-  "bundledDependencies": [],
+  "bundledDependencies": [
+    "fs-extra"
+  ],
   "main": "lib/index.js",
   "license": "Apache-2.0",
   "version": "0.0.0",

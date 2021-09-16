@@ -62,6 +62,10 @@
       "type": "build"
     },
     {
+      "name": "fs-extra",
+      "type": "bundled"
+    },
+    {
       "name": "projen",
       "type": "peer"
     },
